@@ -45,6 +45,7 @@ dotnet run
 | Méthode | Route | Description |
 |---------|-------|-------------|
 | `GET` | `/test` | Test de connectivité |
+| `GET` | `/test/image` | Local url of success image |
 
 ### A venir (par itération)
 
