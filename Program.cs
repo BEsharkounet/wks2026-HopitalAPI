@@ -26,10 +26,26 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 // ──────────────────────────────────────────────
 // TEST ENDPOINT
 // ──────────────────────────────────────────────
+
+app.MapGet("/test/image", (HttpContext context) =>
+{
+    var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
+    return Results.Ok(new
+    {
+        imageUrl = "/images/SuccesImage.png"
+    });
+})
+.WithName("TestImage")
+.WithSummary("Test image")
+.WithDescription("Retourne l'URL d'une image de test. Le front utilise imageUrl (chemin relatif) ou fullUrl (URL absolue).")
+.WithTags("Test");
+
+
 
 app.MapGet("/test", () =>
 {

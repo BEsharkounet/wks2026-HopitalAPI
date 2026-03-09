@@ -32,3 +32,5 @@
 /Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/HopitalAPI.pdb
 /Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/HopitalAPI.genruntimeconfig.cache
 /Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/ref/HopitalAPI.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/HopitalAPI.staticwebassets.runtime.json
+/Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/HopitalAPI.sourcelink.json
