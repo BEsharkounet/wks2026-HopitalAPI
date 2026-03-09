@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "T09pHqee2YA=",
+  "success": true,
+  "projectFilePath": "/Users/sharkounet/Projects/wks2026/HopitalAPI/HopitalAPI.csproj",
+  "expectedPackageFiles": [
+    "/Users/sharkounet/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0/microsoft.aspnetcore.openapi.10.0.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/scalar.aspnetcore/2.13.2/scalar.aspnetcore.2.13.2.nupkg.sha512"
+  ],
+  "logs": []
+}
