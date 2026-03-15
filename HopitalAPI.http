@@ -1,6 +1,318 @@
-@HopitalAPI_HostAddress = http://localhost:5150
+# ═══════════════════════════════════════════════════════════════
+# Clinique Saint-Lucas — Tests API
+# ═══════════════════════════════════════════════════════════════
+# Utilisation : VS Code (extension REST Client) ou Rider
+#
+# IMPORTANT : exécuter d'abord la requête "Login" (§ Auth),
+# puis copier le token dans la variable @token ci-dessous.
+# ═══════════════════════════════════════════════════════════════
 
-GET {{HopitalAPI_HostAddress}}/weatherforecast/
+@base = http://localhost:5150
+
+# ── Coller ici le token reçu après le login ─────────────────
+@token = COLLER_LE_TOKEN_ICI
+
+
+# ═══════════════════════════════════════════════════════════════
+# TEST — publics (pas de token nécessaire)
+# ═══════════════════════════════════════════════════════════════
+
+### 1. Test de connectivité → 200 + { success: true }
+GET {{base}}/test
 Accept: application/json
+
+###
+
+### 2. Test image → 200 + { imageUrl }
+GET {{base}}/test/image
+Accept: application/json
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# AUTH — publics
+# ═══════════════════════════════════════════════════════════════
+
+### 3. Login valide → 200 + token JWT  ← EXÉCUTER EN PREMIER
+POST {{base}}/api/patients/login
+Content-Type: application/json
+
+{
+  "email": "patient@clinique.be",
+  "password": "Patient2026!"
+}
+
+###
+
+### 4. Login mauvais mot de passe → 401
+POST {{base}}/api/patients/login
+Content-Type: application/json
+
+{
+  "email": "patient@clinique.be",
+  "password": "mauvaisMotDePasse"
+}
+
+###
+
+### 5. Login email inconnu → 401
+POST {{base}}/api/patients/login
+Content-Type: application/json
+
+{
+  "email": "inconnu@test.com",
+  "password": "Patient2026!"
+}
+
+###
+
+### 6. Register → 501 (non disponible)
+POST {{base}}/api/patients/register
+Content-Type: application/json
+
+{
+  "email": "nouveau@test.com",
+  "password": "Test1234!"
+}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# VÉRIFICATION DU BLOCAGE — sans token → 401
+# ═══════════════════════════════════════════════════════════════
+
+### 7. Services sans token → 401
+GET {{base}}/api/services
+Accept: application/json
+
+###
+
+### 8. Team sans token → 401
+GET {{base}}/api/team
+Accept: application/json
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# HOMEPAGE — protégé 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 9. Homepage → 200 + hero, stats, sections
+GET {{base}}/api/homepage
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# SERVICES — protégés 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 10. Liste des services → 200 + tableau (6 entrées)
+GET {{base}}/api/services
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 11. Service id=1 (Urgences) → 200
+GET {{base}}/api/services/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 12. Service id=3 (Pédiatrie) → 200
+GET {{base}}/api/services/3
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 13. Service id=99 (inexistant) → 404
+GET {{base}}/api/services/99
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# DÉPARTEMENTS — protégés 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 14. Liste des départements → 200 + tableau (4 entrées)
+GET {{base}}/api/departments
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 15. Département id=1 (Cardiologie) → 200
+GET {{base}}/api/departments/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 16. Département id=4 (Neurologie) → 200
+GET {{base}}/api/departments/4
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 17. Département id=99 (inexistant) → 404
+GET {{base}}/api/departments/99
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# ÉQUIPE MÉDICALE — protégée 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 18. Liste des médecins → 200 + tableau (8 entrées)
+GET {{base}}/api/team
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 19. Médecin id=1 (Dr. Lecomte) → 200
+GET {{base}}/api/team/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 20. Médecin id=5 (Dr. Renard) → 200
+GET {{base}}/api/team/5
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 21. Médecin id=99 (inexistant) → 404
+GET {{base}}/api/team/99
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# ACTUALITÉS — protégées 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 22. Liste des actualités → 200 + tableau (5 entrées)
+GET {{base}}/api/news
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 23. Article id=1 (IRM 3 Tesla) → 200
+GET {{base}}/api/news/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 24. Article id=4 (Prix qualité) → 200
+GET {{base}}/api/news/4
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### 25. Article id=99 (inexistant) → 404
+GET {{base}}/api/news/99
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+
+# ═══════════════════════════════════════════════════════════════
+# FORMULAIRES POST — protégés 🔒
+# ═══════════════════════════════════════════════════════════════
+
+### 26. Contact valide → 200 + referenceId
+POST {{base}}/api/contact
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "Jean",
+  "lastName":  "Dupont",
+  "email":     "jean.dupont@test.be",
+  "subject":   "Demande d'information",
+  "message":   "Bonjour, je souhaite des informations sur le service de cardiologie."
+}
+
+###
+
+### 27. Contact champs manquants → 400
+POST {{base}}/api/contact
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "Jean",
+  "email":     "",
+  "message":   ""
+}
+
+###
+
+### 28. Rendez-vous valide → 200 + appointmentId
+POST {{base}}/api/appointments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName":     "Marie",
+  "lastName":      "Martin",
+  "email":         "marie.martin@test.be",
+  "phone":         "+32 477 12 34 56",
+  "doctorId":      1,
+  "serviceId":     2,
+  "preferredDate": "2026-04-15",
+  "reason":        "Consultation de suivi cardiologique"
+}
+
+###
+
+### 29. Rendez-vous sans email → 400
+POST {{base}}/api/appointments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName":     "Marie",
+  "lastName":      "Martin",
+  "email":         "",
+  "preferredDate": "2026-04-15"
+}
+
+###
+
+### 30. Rendez-vous sans token → 401
+POST {{base}}/api/appointments
+Content-Type: application/json
+
+{
+  "firstName":     "Marie",
+  "lastName":      "Martin",
+  "email":         "marie@test.be",
+  "preferredDate": "2026-04-15"
+}
 
 ###

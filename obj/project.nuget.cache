@@ -1,12 +1,20 @@
 {
   "version": 2,
-  "dgSpecHash": "T09pHqee2YA=",
+  "dgSpecHash": "Nf91PrFhDLc=",
   "success": true,
   "projectFilePath": "/Users/sharkounet/Projects/wks2026/HopitalAPI/HopitalAPI.csproj",
   "expectedPackageFiles": [
+    "/Users/sharkounet/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.5/microsoft.aspnetcore.authentication.jwtbearer.10.0.5.nupkg.sha512",
     "/Users/sharkounet/.nuget/packages/microsoft.aspnetcore.openapi/10.0.0/microsoft.aspnetcore.openapi.10.0.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.abstractions/8.16.0/microsoft.identitymodel.abstractions.8.16.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.16.0/microsoft.identitymodel.jsonwebtokens.8.16.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.logging/8.16.0/microsoft.identitymodel.logging.8.16.0.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.protocols/8.0.1/microsoft.identitymodel.protocols.8.0.1.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/8.0.1/microsoft.identitymodel.protocols.openidconnect.8.0.1.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/microsoft.identitymodel.tokens/8.16.0/microsoft.identitymodel.tokens.8.16.0.nupkg.sha512",
     "/Users/sharkounet/.nuget/packages/microsoft.openapi/2.0.0/microsoft.openapi.2.0.0.nupkg.sha512",
-    "/Users/sharkounet/.nuget/packages/scalar.aspnetcore/2.13.2/scalar.aspnetcore.2.13.2.nupkg.sha512"
+    "/Users/sharkounet/.nuget/packages/scalar.aspnetcore/2.13.2/scalar.aspnetcore.2.13.2.nupkg.sha512",
+    "/Users/sharkounet/.nuget/packages/system.identitymodel.tokens.jwt/8.16.0/system.identitymodel.tokens.jwt.8.16.0.nupkg.sha512"
   ],
   "logs": []
 }

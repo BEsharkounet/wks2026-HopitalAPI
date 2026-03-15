@@ -34,3 +34,11 @@
 /Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/ref/HopitalAPI.dll
 /Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/HopitalAPI.staticwebassets.runtime.json
 /Users/sharkounet/Projects/wks2026/HopitalAPI/obj/Debug/net10.0/HopitalAPI.sourcelink.json
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.Logging.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/Microsoft.IdentityModel.Tokens.dll
+/Users/sharkounet/Projects/wks2026/HopitalAPI/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll

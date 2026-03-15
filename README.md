@@ -11,8 +11,10 @@ Elle simule l'API d'un hôpital fictif — la **Clinique Saint-Lucas** — et pe
 Dans le cadre du workshop, les étudiants jouent le rôle d'une agence web mandatée par la Clinique Saint-Lucas pour refaire son site web. Cette API simule ce que fournirait le service informatique de l'hôpital dans un projet réel.
 
 Les étudiants doivent :
+- s'**authentifier** via `POST /api/patients/login` pour obtenir un Bearer token
+- inclure ce token dans **toutes leurs requêtes** via le header `Authorization: Bearer <token>`
 - consommer les endpoints `GET` pour afficher le contenu du site (services, équipe, actualités…)
-- soumettre les formulaires via les endpoints `POST` (contact, rendez-vous, inscription patient)
+- soumettre les formulaires via les endpoints `POST` (contact, rendez-vous)
 
 ---
 
@@ -21,6 +23,8 @@ Les étudiants doivent :
 - **.NET 10** — Minimal API
 - **Scalar** — Interface Swagger UI (`/scalar/v1`)
 - **Microsoft.AspNetCore.OpenApi** — Génération du schéma OpenAPI
+- **Microsoft.AspNetCore.Authentication.JwtBearer** — Authentification JWT
+- **System.IdentityModel.Tokens.Jwt** — Génération des tokens
 
 ---
 
@@ -32,45 +36,169 @@ dotnet run
 
 | URL | Description |
 |-----|-------------|
-| `http://localhost:5000/scalar/v1` | Interface Swagger (Scalar UI) |
-| `http://localhost:5000/openapi/v1.json` | Schéma OpenAPI JSON |
-| `http://localhost:5000/test` | Endpoint de test de connectivité |
+| `http://localhost:5150/scalar/v1` | Interface Swagger (Scalar UI) |
+| `http://localhost:5150/openapi/v1.json` | Schéma OpenAPI JSON |
+| `http://localhost:5150/test` | Endpoint de test de connectivité |
+
+---
+
+## Authentification
+
+L'API utilise des **JWT Bearer tokens**. Tous les endpoints `/api/*` sont protégés — sans token valide, l'API retourne `401 Unauthorized`.
+
+### Compte patient (hardcodé)
+
+| Champ | Valeur |
+|-------|--------|
+| Email | `patient@clinique.be` |
+| Mot de passe | `Patient2026!` |
+
+### Obtenir un token
+
+```http
+POST /api/patients/login
+Content-Type: application/json
+
+{ "email": "patient@clinique.be", "password": "Patient2026!" }
+```
+
+**Réponse :**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "expiresIn": 86400,
+  "user": {
+    "id": 1,
+    "name": "Marie Vandenberghe",
+    "email": "patient@clinique.be",
+    "role": "patient"
+  }
+}
+```
+
+### Utiliser le token
+
+Inclure dans chaque requête :
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
 
 ---
 
 ## Endpoints
 
-### Disponibles
+### Test — publics (pas d'authentification requise)
 
 | Méthode | Route | Description |
 |---------|-------|-------------|
 | `GET` | `/test` | Test de connectivité |
-| `GET` | `/test/image` | Local url of success image |
+| `GET` | `/test/image` | URL d'une image de test |
 
-### A venir (par itération)
+### Auth — publics
 
-**Itération 2 — Lecture de données**
+| Méthode | Route | Description | Body |
+|---------|-------|-------------|------|
+| `POST` | `/api/patients/login` | Connexion — retourne un JWT Bearer token | `{ email, password }` |
+| `POST` | `/api/patients/register` | Non disponible — retourne 501 | — |
 
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| `GET` | `/api/homepage` | Contenu de la page d'accueil |
-| `GET` | `/api/services` | Liste des services médicaux |
-| `GET` | `/api/services/{id}` | Détail d'un service |
-| `GET` | `/api/departments` | Liste des départements |
-| `GET` | `/api/departments/{id}` | Détail d'un département |
-| `GET` | `/api/team` | Liste de l'équipe médicale |
-| `GET` | `/api/team/{id}` | Fiche d'un médecin |
-| `GET` | `/api/news` | Liste des actualités |
-| `GET` | `/api/news/{id}` | Détail d'un article |
-
-**Itération 3 — Soumission de formulaires**
+### Homepage — protégé 🔒
 
 | Méthode | Route | Description |
 |---------|-------|-------------|
-| `POST` | `/api/contact` | Formulaire de contact |
-| `POST` | `/api/appointments` | Demande de rendez-vous |
-| `POST` | `/api/patients/register` | Inscription espace patient |
-| `POST` | `/api/patients/login` | Connexion espace patient |
+| `GET` | `/api/homepage` | Contenu de la page d'accueil (hero, stats, sections) |
+
+**Réponse :** `hero` (title, subtitle, cta), `stats` (4 chiffres clés), `sections` (3 entrées)
+
+### Services — protégés 🔒
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/services` | Liste des 6 services médicaux |
+| `GET` | `/api/services/{id}` | Détail d'un service (id : 1 à 6) |
+
+**Services disponibles :** Urgences (1), Cardiologie (2), Pédiatrie (3), Radiologie & Imagerie (4), Chirurgie (5), Maternité (6)
+
+**Champs :** `id`, `slug`, `name`, `shortDescription`, `description`, `icon`, `image`, `phone`, `hours`, `departmentId`
+
+### Départements — protégés 🔒
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/departments` | Liste des 4 départements |
+| `GET` | `/api/departments/{id}` | Détail d'un département (id : 1 à 4) |
+
+**Départements disponibles :** Cardiologie (1), Chirurgie (2), Pédiatrie & Néonatologie (3), Neurologie (4)
+
+**Champs :** `id`, `slug`, `name`, `description`, `head`, `floor`, `phone`, `teamCount`, `serviceId`
+
+### Équipe médicale — protégée 🔒
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/team` | Liste des 8 médecins |
+| `GET` | `/api/team/{id}` | Fiche d'un médecin (id : 1 à 8) |
+
+**Champs :** `id`, `departmentId`, `firstName`, `lastName`, `title`, `specialty`, `bio`, `languages`, `consultationDays`, `phone`, `email`, `avatar`
+
+### Actualités — protégées 🔒
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/news` | Liste des 5 actualités |
+| `GET` | `/api/news/{id}` | Détail d'un article (id : 1 à 5) |
+
+**Champs :** `id`, `title`, `slug`, `summary`, `content`, `category`, `author`, `publishedAt`, `image`, `tags`
+
+### Formulaires — protégés 🔒
+
+| Méthode | Route | Description | Champs obligatoires |
+|---------|-------|-------------|---------------------|
+| `POST` | `/api/contact` | Formulaire de contact | `firstName`, `email`, `message` |
+| `POST` | `/api/appointments` | Demande de rendez-vous | `firstName`, `email`, `preferredDate` |
+
+**`POST /api/contact` — body :**
+```json
+{
+  "firstName": "string",
+  "lastName":  "string",
+  "email":     "string",
+  "subject":   "string",
+  "message":   "string"
+}
+```
+
+**`POST /api/appointments` — body :**
+```json
+{
+  "firstName":     "string",
+  "lastName":      "string",
+  "email":         "string",
+  "phone":         "string",
+  "doctorId":      1,
+  "serviceId":     2,
+  "preferredDate": "2026-04-15",
+  "reason":        "string"
+}
+```
+
+---
+
+## Codes de réponse
+
+| Code | Signification |
+|------|---------------|
+| `200` | Succès |
+| `400` | Données manquantes ou invalides |
+| `401` | Token absent, invalide ou expiré |
+| `404` | Ressource introuvable |
+| `501` | Fonctionnalité non implémentée |
+
+---
+
+## CORS
+
+L'API accepte les requêtes de **toutes les origines** (`AllowAnyOrigin`) — les fichiers HTML des étudiants peuvent l'appeler directement depuis `localhost` ou depuis un fichier local.
 
 ---
 
